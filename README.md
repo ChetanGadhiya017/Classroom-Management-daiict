@@ -16,9 +16,9 @@ Built as a team project at DA-IICT with Node.js, Express and MongoDB, plus a pla
 
 ## 🎬 Demo
 
-https://github.com/user-attachments/assets/cfea0d2c-6451-430b-a9fe-d845aa8e690d
+<img src="frontend/teacher-timetable.png" alt="Teacher timetable" width="70%" />
 
-Full-quality recordings are in [`videoFile/`](videoFile).
+▶️ Watch the walkthrough: [720p](videoFile/Classroom-Managment%20Video_720p.mp4) · [4K](videoFile/Classroom-Managment%20Video_4k.mp4)
 
 ---
 
