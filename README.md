@@ -1,61 +1,94 @@
-# Preview of Project
-![image](https://github.com/user-attachments/assets/01c5c66f-8b10-4c4e-89d7-81201c572115)
-![image](https://github.com/user-attachments/assets/ec085a58-8063-4a9b-9b4c-595b7b4c1f85)
+<div align="center">
 
-## Video Preview
+# 🏫 Classroom Manager
+
+**A lightweight web app for running a class: timetable, assignments, attendance and announcements in one place.**
+
+Built as a team project at DA-IICT with Node.js, Express and MongoDB, plus a plain HTML/CSS/JS frontend.
+
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
+![JavaScript](https://img.shields.io/badge/Frontend-HTML%20%7C%20CSS%20%7C%20JS-F7DF1E?logo=javascript&logoColor=black)
+
+</div>
+
+---
+
+## 🎬 Demo
+
 https://github.com/user-attachments/assets/cfea0d2c-6451-430b-a9fe-d845aa8e690d
-###
-# Classroom Management Project
 
-## Overview
+Full-quality recordings are in [`videoFile/`](videoFile).
 
-This project is designed to help manage classroom activities and resources using a web application built with Node.js, Express, and MongoDB.
+---
 
-## Technologies Used
+## ✨ Features
 
-- **JavaScript**: The programming language for the application.
-- **HTML**: For building the frontend interface.
-- **Express**: A web application framework for Node.js.
-- **Mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
-- **MongoDB**: A NoSQL database for storing data.
+- 🗓️ **Teacher timetable** view
+- 📚 **Classes**: create classrooms and open each one's page
+- 📝 **Assignments**: post assignments to a class
+- ✅ **Attendance** records per student
+- 🔔 **Notifications** and announcements feed
+- 👩‍🎓 **Student** records
 
-## Installation
+---
 
-To get started with this project, follow these steps:
+## 🧰 Tech stack
 
-### Prerequisites
+| Layer | Tech |
+|---|---|
+| Frontend | HTML, CSS, vanilla JavaScript (`fetch`) |
+| Backend | Node.js, Express 4, CORS |
+| Database | MongoDB with Mongoose schemas: `Classroom`, `Student`, `Assignment`, `Attendence`, `Notification` |
 
-- [Node.js](https://nodejs.org/) installed on your machine.
-- [MongoDB](https://www.mongodb.com/) installed or use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for a cloud solution.
+---
 
-### Step 1: Clone the Repository
+## 🚀 Getting started
+
 ```bash
-git clone https://github.com/your-username/classroom-management.git
-cd classroom-management
-```
-### Step 2: Install Dependencies
-Run the following command to install Express and Mongoose:
-```bash
-npm install express mongoose
-```
-
-### Step 3: Setup MongoDB
-If you're using a local MongoDB instance, make sure it’s running. If you're using MongoDB Atlas, create a cluster and obtain your connection string.
-
-### Step 4: Create a .env File
-Create a .env file in the root directory of your project to store your environment variables:
-```bash
-MONGODB_URI=your_mongodb_connection_string
-```
-### Step 5: Run the Application
-Use the following command to start the application:
-```bash
-node index.js
+git clone https://github.com/ChetanGadhiya017/Classroom-Management-daiict.git
+cd Classroom-Management-daiict/backend
+npm install
+cp .env.example .env      # set MONGODB_URI (local MongoDB or Atlas)
+npm run dev               # API on http://localhost:8000
 ```
 
-Replace index.js with the entry point of your application if it's named differently.
+Then open `frontend/index.html` in your browser (or serve the folder with any static server, e.g. VS Code Live Server).
 
-### Step 6: Access the Application
-Open your browser and go to http://localhos:8000 (or the port your application is set to run on).
+---
 
+## 📡 API
 
+| Method | Endpoint | Description |
+|---|---|---|
+| GET / POST | `/class` | List / create classrooms |
+| GET | `/:class` | Data for one classroom |
+| GET / POST | `/students` | List / add students |
+| GET / POST | `/assignment` | List / create assignments |
+| GET / POST | `/attendence` | List / record attendance |
+| GET / POST | `/notifications` | List / post notifications |
+
+---
+
+## 🗂️ Structure
+
+```
+├── backend/
+│   ├── src/index.js        # Express app + routes
+│   ├── src/schema/         # Mongoose models
+│   └── .env.example
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── styles.css
+└── videoFile/              # demo recordings
+```
+
+---
+
+## 🔮 Ideas for next steps
+
+- Authentication with teacher / student roles
+- Edit and delete endpoints, plus input validation
+- Assignment file uploads and submissions
+- Deploy the API and serve the frontend from Express
