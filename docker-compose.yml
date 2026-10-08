@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/classroom
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      CLIENT_ORIGIN: http://localhost:8000
+    depends_on: [mongo]
+    volumes: ["uploads:/app/backend/uploads"]
+  mongo:
+    image: mongo:7
+    volumes: ["mongo:/data/db"]
+volumes:
+  uploads:
+  mongo:

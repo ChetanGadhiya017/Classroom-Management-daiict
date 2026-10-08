@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [initial, main]
+  pull_request:
+
+jobs:
+  api:
+    name: API · lint & integration tests
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports: ["27017:27017"]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+        env:
+          MONGODB_URI_TEST: mongodb://127.0.0.1:27017
+
+  web:
+    name: Web · lint & build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose up -d --build
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 30); do curl -fs localhost:8000/api/health | grep -q '"db":"up"' && break; sleep 2; done
+          curl -fs localhost:8000/ | grep -q "Classroom Manager"
+          curl -fs -X POST localhost:8000/api/auth/register -H 'Content-Type: application/json' \
+            -d '{"name":"CI Teacher","email":"ci@test.io","password":"password123","role":"teacher"}'
