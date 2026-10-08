@@ -1,3 +1,4 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Assignment = require("./schema/assignment");
 const Notification = require("./schema/notification");
@@ -13,9 +14,8 @@ app.use(express.json());
 app.use(cors());
 app.options("*", cors());
 mongoose
-  .connect(
-    "mongodb+srv://23bit092:KN8Zena5bRfZ8npF@cluster0.ut8qk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  // Connection string comes from backend/.env (see .env.example)
+  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/classroom")
   .then(() => {
     console.log("Connected");
   })
@@ -78,8 +78,9 @@ app.post("/assignment", async (req, res) => {
   res.json(assignment);
 });
 
-app.listen(8000, () => {
-  console.log("We are listening on Port:8000 ...");
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`We are listening on Port:${PORT} ...`);
 });
 
 app.get("/:class", async (req, res) => {
