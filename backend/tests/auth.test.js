@@ -51,3 +51,13 @@ describe("auth", () => {
     expect(r.body.error).toBeTruthy();
   });
 });
+
+describe("session probe", () => {
+  it("returns null instead of 401 when signed out", async () => {
+    const r = await request(app).get("/api/auth/session");
+    expect(r.status).toBe(200);
+    expect(r.body.user).toBeNull();
+    const bad = await request(app).get("/api/auth/session").set("Cookie", "cm_token=garbage");
+    expect(bad.body.user).toBeNull();
+  });
+});

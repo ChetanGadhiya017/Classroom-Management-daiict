@@ -13,6 +13,8 @@ const FIRST = ["Aarav", "Diya", "Kabir", "Meera", "Rohan", "Saanvi", "Arjun", "I
 const LAST = ["Shah", "Patel", "Mehta", "Iyer", "Nair", "Rao", "Desai", "Joshi", "Kapoor", "Reddy"];
 const day = 24 * 3600 * 1000;
 const iso = (d) => d.toISOString().slice(0, 10);
+const endOfDay = (ms) => { const d = new Date(ms); d.setHours(23, 59, 0, 0); return d; };
+const TENDENCY = [0.98, 0.95, 0.92, 0.9, 0.88, 0.85, 0.82, 0.78, 0.72, 0.65];
 
 async function seed() {
   await mongoose.connect(config.mongoUri);
@@ -43,10 +45,10 @@ async function seed() {
     await Post.create({ classroom: c._id, author: s.teacher._id, body: "Reminder: quiz 1 covers units 1 and 2. Bring your ID card.",
       comments: [{ author: ids[1], body: "Will it be MCQ or written?" }, { author: s.teacher._id, body: "Both: 10 MCQs and 2 short answers." }] });
     const tasks = [
-      { title: `${s.subject} Lab 1: Setup and basics`, due: new Date(now - 12 * day), points: 20, topic: "Labs" },
-      { title: `${s.subject} Assignment 1`, due: new Date(now - 4 * day), points: 50, topic: "Assignments" },
-      { title: `${s.subject} Lab 2`, due: new Date(now + 3 * day), points: 20, topic: "Labs" },
-      { title: `${s.subject} Mini project proposal`, due: new Date(now + 9 * day), points: 100, topic: "Project" },
+      { title: `${s.subject} Lab 1: Setup and basics`, due: endOfDay(now - 12 * day), points: 20, topic: "Labs" },
+      { title: `${s.subject} Assignment 1`, due: endOfDay(now - 4 * day), points: 50, topic: "Assignments" },
+      { title: `${s.subject} Lab 2`, due: endOfDay(now + 3 * day), points: 20, topic: "Labs" },
+      { title: `${s.subject} Mini project proposal`, due: endOfDay(now + 9 * day), points: 100, topic: "Project" },
     ];
     for (const [ti, t] of tasks.entries()) {
       const a = await Assignment.create({ ...t, classroom: c._id, author: s.teacher._id,
@@ -64,7 +66,11 @@ async function seed() {
     for (let k = 1; k <= 10; k++) {
       const date = iso(new Date(now - k * 3 * day));
       await Attendance.create({ classroom: c._id, date, topic: `Lecture ${11 - k}`, takenBy: s.teacher._id,
-        records: students.map((st, si) => ({ student: st._id, status: (si * 3 + k + ci) % 11 === 0 ? "absent" : (si + k) % 13 === 0 ? "late" : "present" })) });
+        records: students.map((st, si) => {
+          const p = TENDENCY[(si * 3 + ci) % TENDENCY.length];
+          const r = ((si * 37 + k * 101 + ci * 53) % 100) / 100;
+          return { student: st._id, status: r < p - 0.05 ? "present" : r < p ? "late" : "absent" };
+        }) });
     }
   }
   await Notification.create({ user: students[0]._id, type: "grade", title: "DBMS Assignment 1: 41/50", link: "/" });

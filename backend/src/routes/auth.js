@@ -42,6 +42,18 @@ router.post("/logout", (_req, res) => {
   res.json({ ok: true });
 });
 
+/** Like /me but never 401s: the app calls this on load to find out whether someone is signed in. */
+router.get("/session", async (req, res, next) => {
+  if (!req.cookies?.[COOKIE]) return res.json({ user: null });
+  try {
+    await requireAuth(req, res, () => {});
+    res.json({ user: req.user.toPublic() });
+  } catch (err) {
+    if (err.status === 401) return res.json({ user: null });
+    next(err);
+  }
+});
+
 router.get("/me", requireAuth, (req, res) => res.json({ user: req.user.toPublic() }));
 
 router.patch("/me", requireAuth, validate(z.object({
